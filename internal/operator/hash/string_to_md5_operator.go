@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fe_extractor/internal/operator"
+	"hash/fnv"
 	"unsafe"
 )
 
@@ -19,7 +20,10 @@ func (s *StringToMd5Operator) Handler(in interface{}) (interface{}, error) {
 	}
 	m := md5.New()
 	m.Write(*((*[]byte)(unsafe.Pointer(&cur))))
-	return hex.EncodeToString(m.Sum(nil)), nil
+	hashStr := hex.EncodeToString(m.Sum(nil))
+	h := fnv.New32a()
+	h.Write([]byte(hashStr))
+	return h.Sum32(), nil
 }
 
 func (s *StringToMd5Operator) Register() string {
