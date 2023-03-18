@@ -9,9 +9,6 @@ import (
 	"fe_extractor/internal/operator/random"
 	"fe_extractor/internal/parse"
 	"fmt"
-	"unsafe"
-
-	"github.com/cloudwego/hertz/pkg/common/errors"
 )
 
 var operators map[string]operator.Operator
@@ -21,7 +18,7 @@ func init() {
 	stringtoInt := &convert.StringToIntOperator{}
 	stmo := &hash.StringToMd5Operator{}
 	ro := &random.RandomOperator{}
-
+	operators = make(map[string]operator.Operator)
 	operators[stringtoInt.Register()] = stringtoInt
 	operators[stmo.Register()] = stmo
 	operators[ro.Register()] = ro
@@ -41,7 +38,7 @@ func (h *Handler) Init(config string) {
 
 func (h *Handler) Handle(input string) ([]interface{}, error) {
 	data := map[string]interface{}{}
-	err := json.Unmarshal(*(*[]byte)(unsafe.Pointer(&input)), data)
+	err := json.Unmarshal([]byte(input), &data)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +47,7 @@ func (h *Handler) Handle(input string) ([]interface{}, error) {
 	h.p.Root.OP(func(node *parse.OperatorNode) interface{} {
 		op, ok := operators[node.FuncName()]
 		if !ok {
-			panic(errors.New(fmt.Sprintf("have not op is :%s, please check your config\n", node.FuncName())))
+			panic(fmt.Errorf("have not op is :%s, please check your config", node.FuncName()))
 		}
 		var out interface{}
 		// 区分一下  不想改数组了

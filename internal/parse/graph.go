@@ -1,6 +1,8 @@
 package parse
 
-import "log"
+import (
+	"log"
+)
 
 type OperatorNode struct {
 	params   []string
@@ -40,7 +42,7 @@ type GraphNode struct {
 
 // NewGraph: create graph
 func NewGraph(config []*OperatorNode) *GraphNode {
-	root := &GraphNode{name: "root"}
+	root := &GraphNode{name: "root", next: map[string]*GraphNode{}}
 	root.init(config)
 	return root
 }
@@ -60,11 +62,14 @@ func (g *GraphNode) init(config []*OperatorNode) {
 			pte[config[i].params[j]] = append(pte[config[i].params[j]], config[i].name)
 		}
 	}
-	for k := range om {
-		if _, ok := pte[k]; !ok {
-			out[k] = struct{}{}
+	for k, v := range pte {
+		if _, ok := om[k]; !ok {
+			for i := 0; i < len(v); i++ {
+				dig[v[i]]--
+			}
 		}
 	}
+	cnt := 0
 	for len(dig) > 0 {
 		for k, v := range dig {
 			if v != 0 {
@@ -74,7 +79,7 @@ func (g *GraphNode) init(config []*OperatorNode) {
 			if _, ok := out[node.name]; ok {
 				node.end = true
 			}
-			if len(om[k].params) == 0 {
+			if cnt == 0 {
 				g.next[k] = node
 			} else {
 				for j := 0; j < len(om[k].params); j++ {
@@ -88,6 +93,7 @@ func (g *GraphNode) init(config []*OperatorNode) {
 			state[k] = node
 			delete(dig, k)
 		}
+		cnt++
 	}
 }
 

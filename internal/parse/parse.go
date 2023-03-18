@@ -19,14 +19,15 @@ type Parse struct {
 }
 
 func NewParse() *Parse {
-	return &Parse{}
+	return &Parse{Root: &GraphNode{}}
 }
 
 func (p *Parse) Parse(config string) error {
 	line := strings.Split(config, ";")
 	checkLine := []string{}
 	for i := 0; i < len(line); i++ {
-		if strings.HasPrefix(line[i], "#") {
+		line[i] = p.ignore(line[i])
+		if strings.HasPrefix(line[i], "#") || len(line[i]) == 0 {
 			continue
 		}
 		checkLine = append(checkLine, line[i])
@@ -42,8 +43,19 @@ func (p *Parse) Parse(config string) error {
 		}
 		nodes = append(nodes, node)
 	}
+
 	p.generateGraph(nodes)
 	return nil
+}
+
+func (p *Parse) ignore(line string) string {
+	if strings.HasPrefix(line, "\n") {
+		line = line[1:]
+	}
+	if strings.HasSuffix(line, "\n") {
+		line = line[:len(line)-1]
+	}
+	return line
 }
 
 // check: 检查第一行的元信息
@@ -147,6 +159,7 @@ func (p *Parse) parseLine(line string) (*OperatorNode, error) {
 
 func (p *Parse) generateGraph(op []*OperatorNode) {
 	p.Root = NewGraph(op)
+
 }
 
 func (p *Parse) Version() int {
