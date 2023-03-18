@@ -1,11 +1,33 @@
 package parse
 
+import "log"
+
 type OperatorNode struct {
 	params   []string
 	index    int64
 	outType  string
 	funcName string
 	name     string
+}
+
+func (op *OperatorNode) Params() []string {
+	return op.params
+}
+
+func (op *OperatorNode) Index() int64 {
+	return op.index
+}
+
+func (op *OperatorNode) OutType() string {
+	return op.outType
+}
+
+func (op *OperatorNode) FuncName() string {
+	return op.funcName
+}
+
+func (op *OperatorNode) Name() string {
+	return op.name
 }
 
 type GraphNode struct {
@@ -18,7 +40,7 @@ type GraphNode struct {
 
 // NewGraph: create graph
 func NewGraph(config []*OperatorNode) *GraphNode {
-	root := &GraphNode{}
+	root := &GraphNode{name: "root"}
 	root.init(config)
 	return root
 }
@@ -67,4 +89,26 @@ func (g *GraphNode) init(config []*OperatorNode) {
 			delete(dig, k)
 		}
 	}
+}
+
+func (root *GraphNode) OP(handler func(node *OperatorNode) interface{}) error {
+	defer func() {
+		if p := recover(); p != nil {
+			log.Fatalf("[OP] ERROR : %v\n", p)
+		}
+	}()
+	cur := []*GraphNode{root}
+	for len(cur) != 0 {
+		next := []*GraphNode{}
+		for i := 0; i < len(cur); i++ {
+			if cur[i].name != "root" {
+				handler(cur[i].meta)
+			}
+			for _, v := range cur[i].next {
+				next = append(next, v)
+			}
+		}
+		cur = next
+	}
+	return nil
 }

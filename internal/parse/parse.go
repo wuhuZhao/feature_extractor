@@ -8,14 +8,18 @@ import (
 
 /**
 * versio=1,tf_vector_len=100,type=sparse;
-name=tmpName,op=random("jsonPath"),type=int64,index=1;
-name=tmpName1,op=random("jsonPath1","jsonPath2"),type=string,index=2;
+name=tmpName,op=random(jsonPath),type=int64,index=1;
+name=tmpName1,op=random(jsonPath1,jsonPath2),type=string,index=2;
 **/
 type Parse struct {
 	version    int
 	tensorLen  int
 	tensorType string
-	root       *GraphNode
+	Root       *GraphNode
+}
+
+func NewParse() *Parse {
+	return &Parse{}
 }
 
 func (p *Parse) Parse(config string) error {
@@ -38,6 +42,7 @@ func (p *Parse) Parse(config string) error {
 		}
 		nodes = append(nodes, node)
 	}
+	p.generateGraph(nodes)
 	return nil
 }
 
@@ -140,6 +145,18 @@ func (p *Parse) parseLine(line string) (*OperatorNode, error) {
 	return res, nil
 }
 
-func (p *Parse) generateGraph(op *OperatorNode) {
+func (p *Parse) generateGraph(op []*OperatorNode) {
+	p.Root = NewGraph(op)
+}
 
+func (p *Parse) Version() int {
+	return p.version
+}
+
+func (p *Parse) TensorLen() int {
+	return p.tensorLen
+}
+
+func (p *Parse) TensorType() string {
+	return p.tensorType
 }
