@@ -81,6 +81,7 @@ func (h *Handler) Handle(input string) ([]interface{}, error) {
 				panic(err)
 			}
 		}
+		result[node.Name()] = out
 		if node.Index() != -1 {
 			output[node.Index()] = out
 		}
