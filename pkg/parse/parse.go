@@ -6,11 +6,13 @@ import (
 	"strings"
 )
 
-/**
+/*
+*
 * versio=1,tf_vector_len=100,type=sparse;
 name=tmpName,op=random(jsonPath),type=int64,index=1;
 name=tmpName1,op=random(jsonPath1,jsonPath2),type=string,index=2;
-**/
+*
+*/
 type Parse struct {
 	version    int
 	tensorLen  int

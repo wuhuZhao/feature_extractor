@@ -1,3 +1,3 @@
-module fe_extractor
+module github.com/wuhuZhao/feature_extractor
 
-go 1.18
+go 1.20

@@ -1,7 +1,7 @@
 package convert
 
 import (
-	"fe_extractor/internal/operator"
+	"github.com/wuhuZhao/feature_extractor/pkg/operator"
 	"strconv"
 )
 

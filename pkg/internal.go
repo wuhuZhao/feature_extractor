@@ -1,14 +1,14 @@
-package internal
+package pkg
 
 import (
 	"encoding/json"
 	"errors"
-	"fe_extractor/internal/operator"
-	"fe_extractor/internal/operator/convert"
-	"fe_extractor/internal/operator/hash"
-	"fe_extractor/internal/operator/random"
-	"fe_extractor/internal/parse"
 	"fmt"
+	"github.com/wuhuZhao/feature_extractor/pkg/operator"
+	"github.com/wuhuZhao/feature_extractor/pkg/operator/convert"
+	"github.com/wuhuZhao/feature_extractor/pkg/operator/hash"
+	"github.com/wuhuZhao/feature_extractor/pkg/operator/random"
+	"github.com/wuhuZhao/feature_extractor/pkg/parse"
 )
 
 var operators map[string]operator.Operator

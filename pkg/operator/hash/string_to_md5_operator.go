@@ -3,7 +3,7 @@ package hash
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fe_extractor/internal/operator"
+	"github.com/wuhuZhao/feature_extractor/pkg/operator"
 	"hash/fnv"
 	"unsafe"
 )
